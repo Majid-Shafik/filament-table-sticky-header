@@ -6,6 +6,8 @@
 
 Keep Filament table headers visible while scrolling long tables. The package moves the original table header, so sorting, selection, tooltips, Livewire actions, and horizontal scrolling continue to work without cloned controls.
 
+![Filament Table Sticky Header](sticky-header.gif)
+
 ## Features
 
 - Applies automatically to Filament tables across the panel.
@@ -21,7 +23,7 @@ Keep Filament table headers visible while scrolling long tables. The package mov
 ## Requirements
 
 - PHP 8.2 or newer.
-- Filament 3.x, 4.x, or 5.x.
+- Filament 4.x or 5.x.
 - A modern browser with `ResizeObserver` support.
 
 ## Installation
