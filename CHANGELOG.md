@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Fix the sticky header being misplaced after Livewire morphs the table (e.g. when sorting a column).
+- Fix DOM changes going unnoticed after `wire:navigate` replaced the `<body>`.
+
 ## 1.0.0 - 2026-09-13
 
 - Initial release.

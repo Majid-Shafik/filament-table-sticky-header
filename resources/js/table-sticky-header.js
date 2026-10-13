@@ -140,6 +140,16 @@
     };
 
     const updateHeader = (state) => {
+        // Livewire morphing (e.g. after sorting) can reset or change the class/style
+        // on the <thead> without state.translateY knowing about it. The DOM is the
+        // source of truth: derive the state from it, otherwise naturalHeaderTop and
+        // therefore the header position are wrong.
+        state.translateY = state.header.classList.contains('fi-table-sticky-header-active')
+            ? (Number.parseFloat(
+                state.header.style.getPropertyValue('--fi-table-sticky-header-translate-y'),
+            ) || 0)
+            : 0;
+
         if (! canStickHeader(state)) {
             resetHeader(state);
 
@@ -257,17 +267,26 @@
         resizeObserver = new ResizeObserver(scheduleUpdate);
 
         const mutationObserver = new MutationObserver(scheduleScan);
+        const observeBody = () => {
+            mutationObserver.disconnect();
+            mutationObserver.observe(document.body, {
+                childList: true,
+                subtree: true,
+            });
+        };
 
-        mutationObserver.observe(document.body, {
-            childList: true,
-            subtree: true,
-        });
+        observeBody();
 
         document.addEventListener('scroll', scheduleUpdate, {
             capture: true,
             passive: true,
         });
-        document.addEventListener('livewire:navigated', scheduleScan);
+        // wire:navigate replaces <body>: the observer has to be re-attached to the new
+        // <body>, otherwise later DOM changes (e.g. sorting) go unnoticed.
+        document.addEventListener('livewire:navigated', () => {
+            observeBody();
+            scheduleScan();
+        });
         document.addEventListener('livewire:initialized', scheduleScan);
         window.addEventListener('resize', scheduleScan, { passive: true });
         window.addEventListener('pageshow', scheduleScan);
